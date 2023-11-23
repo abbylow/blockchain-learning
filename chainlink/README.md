@@ -1,6 +1,17 @@
 # Chainlink
 A decentralized oracle network that provides real-world data to smart contracts on the blockchain.
 
+## Chainlink Architecture 
+### [Request and Receive cycle](https://docs.chain.link/architecture-overview/architecture-request-model)
+
+![alt text](/chainlink/images/request_and_receive.png)
+
+### [Decentralized Data Model](https://docs.chain.link/architecture-overview/architecture-decentralized-model)
+
+
+### [Off-Chain Reporting](https://docs.chain.link/architecture-overview/off-chain-reporting)
+The OCR protocol allows nodes to aggregate their observations into a single report off-chain using a secure P2P network. A single node then submits a transaction with the aggregated report to the chain. Each report consists of many nodes' observations and has to be signed by a quorum of nodes. These signatures are verified on-chain.
+
 ## Chainlink Products
 ### [CCIP (Cross-Chain Interoperability Protocol)](https://docs.chain.link/ccip)
 CCIP provides a single simple interface through which dApps and web3 entrepreneurs can securely meet all their cross-chain needs. You can use CCIP to transfer data, tokens, or both data and tokens across chains.

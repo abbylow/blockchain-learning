@@ -46,13 +46,33 @@ Chainlink VRF is tamper-proof because no one—not the oracle, external entities
 
 
 ## How Chainlink VRF Works
+Chainlink VRF works by **combining block data** that is still unknown when the request is made **with the oracle node’s pre-committed private key** to generate both a random number and a cryptographic proof. Each oracle uses its own secret key when generating randomness. 
 
+When the result is published on-chain along with a proof, it is verified on-chain before being sent to a user’s contract. Contracts consume only randomness that has also been verified by the same on-chain environment running the contract itself.
+
+Even if a node is compromised, it cannot manipulate and/or supply biased answers — the on-chain cryptographic proof would fail. The worst-case scenario is that the compromised node does not return a response to a request, which will immediately and forever be visible on the blockchain. Users would no longer rely on nodes that stop responding and/or don’t provide randomness with a valid proof. Even in the unlikely scenario that a node is compromised, its resulting randomness cannot be manipulated.
 
 ## How to use VRF
+### [Payment method](https://docs.chain.link/vrf#choosing-the-correct-method)
+Before using VRF, choosing the payment method between subscription and direct funding.  
 
-## Example 
+### Example of using VRF (subscription method)
+In this example, we learn how to use VRF with suscription payment method. 
+
+#### 1. Create and fund a subscription
+
+
+#### 2. Importing `VRFConsumerBaseV2` and `VRFCoordinatorV2Interface`
+
+
+### [Security Consideration](https://docs.chain.link/vrf/v2/security)
+Be sure to review your contracts with the security considerations in mind.
+
+### [Best Practice](https://docs.chain.link/vrf/v2/best-practices)
+Always keep the best practice in mind too. 
 
 ## Reference
 https://chain.link/education-hub/verifiable-random-function-vrf 
-
 https://blog.chain.link/chainlink-vrf-on-chain-verifiable-randomness/ 
+https://docs.chain.link/vrf/v2/getting-started
+
