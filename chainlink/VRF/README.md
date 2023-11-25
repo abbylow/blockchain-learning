@@ -57,13 +57,39 @@ Even if a node is compromised, it cannot manipulate and/or supply biased answers
 Before using VRF, choosing the payment method between subscription and direct funding.  
 
 ### Example of using VRF (subscription method)
-In this example, we learn how to use VRF with suscription payment method. 
+[Guide](docs.chain.link/vrf/v2/subscription/examples/get-a-random-number)
 
 #### 1. Create and fund a subscription
+- Get LINK token
+- Create subscription on [Chainlink Subscription Manager](https://vrf.chain.link/)
+- Add fund (LINK) to subscription on [Subscription Manager](https://vrf.chain.link/)
+- Add consumer: add the consumer contract(s) to the funded subbscription 
+
+Note: Chainlink website might not reflect the created subscription or subscription balance immediately after transaction is done. Please wait patiently before repeating the action to avoid double creation / funding. 
 
 
-#### 2. Importing `VRFConsumerBaseV2` and `VRFCoordinatorV2Interface`
+#### 2. Create and deploy a VRF v2 compatible contract
+Dependecies that will be used: 
+- [VRFConsumerBaseV2.sol](https://github.com/smartcontractkit/chainlink/blob/develop/contracts/src/v0.8/vrf/VRFConsumerBaseV2.sol): This base contract ensures 1. The fulfillment came from the VRFCoordinator 2. The consumer contract implements `fulfillRandomWords`.
+    
+    `fulfilRandomWords`: It cannot be directly called by anything other than this base contract VRFConsumerBase.rawFulfillRandomness method. Otherwise, the caller can spoof a VRF response with any random value. 
 
+    Consumer contract inherits this base contract (mandatory).
+- [VRFCoordinatorV2Interface.sol](https://github.com/smartcontractkit/chainlink/blob/v2.6.0/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol): In consumer contract, configure the coordinator to call `requestRandomWords`.
+- [ConfirmedOwner.sol](https://github.com/smartcontractkit/chainlink/blob/master/contracts/src/v0.8/shared/access/ConfirmedOwner.sol): About contract ownership management. 
+    
+    Consumer contract inherits this base contract (optionally).
+
+3. Write your consumer contract
+- Get configuration of each supported network (eg: coordinator address, key hash) from https://docs.chain.link/docs/vrf/v2/subscription/supported-networks/#configurations
+- Setup `keyHash`, `callbackGasLimit`, `requestConfirmations`, and `numWords`.
+- In constructor, setup the VRF coordinator and subscription ID. 
+- Create a function `requestRandomWords` to request randomness and store the request ID.
+- Create a function `fulfillRandomWords` to be called by VRF coordination and do something with the returned random words. 
+
+4. Deploy your contract and add the deployed contract as approved consumer in Chainlink VRF subscription manager. 
+
+5. Good to go now.
 
 ### [Security Consideration](https://docs.chain.link/vrf/v2/security)
 Be sure to review your contracts with the security considerations in mind.
