@@ -71,7 +71,7 @@ contract VRFD20 is VRFConsumerBaseV2 {
     }
 
     mapping(address => uint256[]) public creatorToWheelIds;
-    mapping(uint256 => Wheel) public wheelIdToWheel;
+    Wheel[] public wheels;
     mapping(uint256 => uint256[]) public wheelIdToSpinIds;
     mapping(uint256 => Spin) public requestIdToSpin;
     
@@ -115,7 +115,7 @@ contract VRFD20 is VRFConsumerBaseV2 {
 
         numOfWheels++;
         creatorToWheelIds[msg.sender].push(numOfWheels);
-        wheelIdToWheel[numOfWheels] = Wheel(numOfWheels, optionLen, options);
+        wheels.push(Wheel(numOfWheels, optionLen, options));
         
         emit WheelCreated(numOfWheels, msg.sender);
     }
@@ -171,7 +171,7 @@ contract VRFD20 is VRFConsumerBaseV2 {
             revert InvalidWheelId(spin.wheelId);
         }
 
-        Wheel memory wheel = wheelIdToWheel[spin.wheelId];
+        Wheel memory wheel = wheels[spin.wheelId - 1];
         if (wheel.id == 0) {
             revert InvalidWheelId(wheel.id);
         }
@@ -196,7 +196,8 @@ contract VRFD20 is VRFConsumerBaseV2 {
      * @return wheel
      */
     function wheelById(uint256 wheelId) public view returns (Wheel memory) {
-        return wheelIdToWheel[wheelId];
+        if (wheelId > numOfWheels || wheelId == 0) revert InvalidWheelId(wheelId);
+        return wheels[wheelId - 1];
     }
 
 
@@ -211,10 +212,10 @@ contract VRFD20 is VRFConsumerBaseV2 {
 
     /**
      * @notice Get the spin by id (spin id is the vrf request id)
-     * @param spinId uint256
+     * @param requestId uint256
      * @return spin 
      */
-    function spinById(uint256 spinId) public view returns (Spin memory) {
-        return requestIdToSpin[spinId];
+    function spinByRequestId(uint256 requestId) public view returns (Spin memory) {
+        return requestIdToSpin[requestId];
     }
 }
